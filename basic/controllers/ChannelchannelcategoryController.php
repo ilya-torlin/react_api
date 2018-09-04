@@ -3,30 +3,56 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\ChannelChannelcategory;
-use app\models\ChannelChannelcategorySearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\rest\ActiveController;
+use app\filters\auth\HttpBearerAuth;
+use app\components\JsonOutputHelper;
 
 /**
  * ChannelchannelcategoryController implements the CRUD actions for ChannelChannelcategory model.
  */
-class ChannelchannelcategoryController extends Controller
+class ChannelchannelcategoryController extends ActiveController
 {
+
+    public $modelClass = 'app\models\Channelchannelcategory';
+
+    public function checkAccess($action, $model = null, $params = []) {
+
+    }
+
+    public function actions() {
+        $actions = parent::actions();
+        unset($actions['create'], $actions['update'], $actions['index'], $actions['view'], $actions['delete']);
+        return $actions;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
+        $behaviors = parent::behaviors();
+
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className(),
         ];
+
+
+
+        // remove authentication filter
+        $auth = $behaviors['authenticator'];
+        unset($behaviors['authenticator']);
+
+        // add CORS filter
+        $behaviors['corsFilter'] = [
+            'class' => \yii\filters\Cors::className(),
+            'cors' => ['Origin' => ['*']]];
+
+        // re-add authentication filter
+        $behaviors['authenticator'] = $auth;
+        // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
+        $behaviors['authenticator']['except'] = ['options'];
+
+        return $behaviors;
     }
 
     /**
@@ -35,13 +61,7 @@ class ChannelchannelcategoryController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ChannelChannelcategorySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
     }
 
     /**
@@ -52,9 +72,7 @@ class ChannelchannelcategoryController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+
     }
 
     /**
@@ -64,15 +82,7 @@ class ChannelchannelcategoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new ChannelChannelcategory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -84,15 +94,7 @@ class ChannelchannelcategoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -104,9 +106,7 @@ class ChannelchannelcategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
     }
 
     /**
@@ -118,10 +118,6 @@ class ChannelchannelcategoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = ChannelChannelcategory::findOne($id)) !== null) {
-            return $model;
-        }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

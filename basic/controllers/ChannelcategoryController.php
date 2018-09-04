@@ -3,30 +3,51 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Channelcategory;
-use app\models\ChannelcategorySearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\rest\ActiveController;
+use app\filters\auth\HttpBearerAuth;
+use app\components\JsonOutputHelper;
 
 /**
  * ChannelcategoryController implements the CRUD actions for Channelcategory model.
  */
-class ChannelcategoryController extends Controller
+class ChannelcategoryController extends ActiveController
 {
+    public $modelClass = 'app\models\Channelcategory';
+
+    public function actions() {
+        $actions = parent::actions();
+        unset($actions['create'], $actions['update'], $actions['index'], $actions['view'], $actions['delete']);
+        return $actions;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
+        $behaviors = parent::behaviors();
+
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className(),
         ];
+
+
+
+        // remove authentication filter
+        $auth = $behaviors['authenticator'];
+        unset($behaviors['authenticator']);
+
+        // add CORS filter
+        $behaviors['corsFilter'] = [
+            'class' => \yii\filters\Cors::className(),
+            'cors' => ['Origin' => ['*']]];
+
+        // re-add authentication filter
+        $behaviors['authenticator'] = $auth;
+        // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
+        $behaviors['authenticator']['except'] = ['options'];
+
+        return $behaviors;
     }
 
     /**
@@ -35,13 +56,7 @@ class ChannelcategoryController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ChannelcategorySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
     }
 
     /**
@@ -52,9 +67,7 @@ class ChannelcategoryController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+
     }
 
     /**
@@ -64,15 +77,7 @@ class ChannelcategoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Channelcategory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -84,15 +89,7 @@ class ChannelcategoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -104,9 +101,7 @@ class ChannelcategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
     }
 
     /**
@@ -118,10 +113,6 @@ class ChannelcategoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Channelcategory::findOne($id)) !== null) {
-            return $model;
-        }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
