@@ -29,10 +29,8 @@ class Programm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'name'], 'required'],
-            [['id'], 'integer'],
+            [['name'], 'required'],
             [['name'], 'string', 'max' => 128],
-            [['id'], 'unique'],
         ];
     }
 

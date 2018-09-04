@@ -32,11 +32,10 @@ class Channel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'name', 'isHD', 'image'], 'required'],
-            [['id', 'isHD'], 'integer'],
+            [['name', 'isHD', 'image'], 'required'],
             [['name'], 'string'],
+            [['isHD'], 'integer'],
             [['image'], 'string', 'max' => 255],
-            [['id'], 'unique'],
         ];
     }
 

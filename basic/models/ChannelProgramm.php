@@ -33,11 +33,10 @@ class ChannelProgramm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'channel_id', 'programm_id', 'time', 'date'], 'required'],
-            [['id', 'channel_id', 'programm_id', 'HD'], 'integer'],
+            [['channel_id', 'programm_id', 'time', 'date'], 'required'],
+            [['channel_id', 'programm_id', 'HD'], 'integer'],
             [['time'], 'string'],
             [['date'], 'safe'],
-            [['id'], 'unique'],
             [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
             [['programm_id'], 'exist', 'skipOnError' => true, 'targetClass' => Programm::className(), 'targetAttribute' => ['programm_id' => 'id']],
         ];

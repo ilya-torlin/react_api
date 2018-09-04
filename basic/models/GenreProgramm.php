@@ -30,9 +30,8 @@ class GenreProgramm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'genre_id', 'programm_id'], 'required'],
-            [['id', 'genre_id', 'programm_id'], 'integer'],
-            [['id'], 'unique'],
+            [['genre_id', 'programm_id'], 'required'],
+            [['genre_id', 'programm_id'], 'integer'],
             [['genre_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genre::className(), 'targetAttribute' => ['genre_id' => 'id']],
             [['programm_id'], 'exist', 'skipOnError' => true, 'targetClass' => Programm::className(), 'targetAttribute' => ['programm_id' => 'id']],
         ];

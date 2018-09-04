@@ -11,8 +11,8 @@ use Yii;
  * @property int $channel_id
  * @property int $category_id
  *
- * @property Channel $channel
  * @property Channelcategory $category
+ * @property Channel $channel
  */
 class ChannelChannelcategory extends \yii\db\ActiveRecord
 {
@@ -30,11 +30,10 @@ class ChannelChannelcategory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'channel_id', 'category_id'], 'required'],
-            [['id', 'channel_id', 'category_id'], 'integer'],
-            [['id'], 'unique'],
-            [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
+            [['channel_id', 'category_id'], 'required'],
+            [['channel_id', 'category_id'], 'integer'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channelcategory::className(), 'targetAttribute' => ['category_id' => 'id']],
+            [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
         ];
     }
 
@@ -53,16 +52,16 @@ class ChannelChannelcategory extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getChannel()
+    public function getCategory()
     {
-        return $this->hasOne(Channel::className(), ['id' => 'channel_id']);
+        return $this->hasOne(Channelcategory::className(), ['id' => 'category_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getChannel()
     {
-        return $this->hasOne(Channelcategory::className(), ['id' => 'category_id']);
+        return $this->hasOne(Channel::className(), ['id' => 'channel_id']);
     }
 }

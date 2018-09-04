@@ -30,9 +30,8 @@ class ChannelChannelpackage extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'channel_id', 'package_id'], 'required'],
-            [['id', 'channel_id', 'package_id'], 'integer'],
-            [['id'], 'unique'],
+            [['channel_id', 'package_id'], 'required'],
+            [['channel_id', 'package_id'], 'integer'],
             [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
             [['package_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channelpackage::className(), 'targetAttribute' => ['package_id' => 'id']],
         ];
