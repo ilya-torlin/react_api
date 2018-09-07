@@ -60,7 +60,22 @@ class ChannelController extends ActiveController
      */
     public function actionIndex()
     {
+        $params = \Yii::$app->request->get();
 
+        try{
+            $offset = (!empty($params['offset'])) ? intval($params['offset']) : 0;
+
+            $me = \Yii::$app->user->identity;
+
+            $channels = \app\models\Channel::find()->limit(20)->offset($offset)->all();
+            return JsonOutputHelper::getResult($channels);
+
+        }
+        catch(Exception $exception)
+        {
+            Yii::$app->response->statusCode = 422;
+            return JsonOutputHelper::getError('Неверно указан параметр offset');
+        }
     }
 
     /**
