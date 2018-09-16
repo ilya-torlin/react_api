@@ -31,25 +31,25 @@ class ChannelController extends ActiveController
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::className(),
-        ];
-
-
-
-        // remove authentication filter
-        $auth = $behaviors['authenticator'];
-        unset($behaviors['authenticator']);
-
-        // add CORS filter
-        $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::className(),
-            'cors' => ['Origin' => ['*']]];
-
-        // re-add authentication filter
-        $behaviors['authenticator'] = $auth;
-        // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
-        $behaviors['authenticator']['except'] = ['options'];
+//        $behaviors['authenticator'] = [
+//            'class' => HttpBearerAuth::className(),
+//        ];
+//
+//
+//
+//        // remove authentication filter
+//        $auth = $behaviors['authenticator'];
+//        unset($behaviors['authenticator']);
+//
+//        // add CORS filter
+//        $behaviors['corsFilter'] = [
+//            'class' => \yii\filters\Cors::className(),
+//            'cors' => ['Origin' => ['*']]];
+//
+//        // re-add authentication filter
+//        $behaviors['authenticator'] = $auth;
+//        // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
+//        $behaviors['authenticator']['except'] = ['options'];
 
         return $behaviors;
     }
@@ -65,9 +65,9 @@ class ChannelController extends ActiveController
         try{
             $offset = (!empty($params['offset'])) ? intval($params['offset']) : 0;
 
-            $me = \Yii::$app->user->identity;
 
-            $channels = \app\models\Channel::find()->limit(20)->offset($offset)->all();
+            $channels = \app\models\Channel::find()
+                ->limit(100)->offset($offset)->asArray()->all();
             return JsonOutputHelper::getResult($channels);
 
         }
