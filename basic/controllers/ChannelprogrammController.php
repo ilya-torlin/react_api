@@ -31,27 +31,11 @@ class ChannelprogrammController extends ActiveController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors['rateLimiter'] = [
+           'class' => \yii\filters\RateLimiter::className(),
+        ];
 
-//        $behaviors['authenticator'] = [
-//            'class' => HttpBearerAuth::className(),
-//        ];
-//
-//
-//
-//        // remove authentication filter
-//        $auth = $behaviors['authenticator'];
-//        unset($behaviors['authenticator']);
-//
-//        // add CORS filter
-//        $behaviors['corsFilter'] = [
-//            'class' => \yii\filters\Cors::className(),
-//            'cors' => ['Origin' => ['*']]];
-//
-//        // re-add authentication filter
-//        $behaviors['authenticator'] = $auth;
-//        // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
-//        $behaviors['authenticator']['except'] = ['options'];
-
+        $behaviors['rateLimiter']['enableRateLimitHeaders'] = true;
         return $behaviors;
     }
 
@@ -125,60 +109,4 @@ class ChannelprogrammController extends ActiveController
         }
     }
 
-    /**
-     * Displays a single ChannelProgramm model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-
-    }
-
-    /**
-     * Creates a new ChannelProgramm model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-
-    }
-
-    /**
-     * Updates an existing ChannelProgramm model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-
-    }
-
-    /**
-     * Deletes an existing ChannelProgramm model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-
-    }
-
-    /**
-     * Finds the ChannelProgramm model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return ChannelProgramm the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-
-    }
 }

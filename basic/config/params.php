@@ -1,5 +1,9 @@
 <?php
 
 return [
-    'adminEmail' => 'admin@example.com',
+    'adminEmail' => 'ilya.torlin@gmail.com',
+    'maxRateLimit' => 1,
+    'perRateLimit' => 30,
+    'maxGetRateLimit' => 2,
+    'perGetRateLimit' => 1,
 ];
